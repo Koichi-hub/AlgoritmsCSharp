@@ -1,38 +1,64 @@
-﻿using System.Text;
-
-namespace EazyCSharp
+﻿namespace EazyCSharp
 {
+    /// <summary>
+    /// Решение задачи Binary Watch с LeetCode https://leetcode.com/problems/binary-watch/description/
+    /// </summary>
     internal class PrintCombinationsWithoutOrderAndRepetitions
     {
-        private readonly StringBuilder sb;
-        private readonly int[] a;
         private readonly int[] indexes;
         private readonly int n;
-        private readonly int k;
+        private readonly int turnedOn;
+        private readonly Dictionary<int, int> indexToHoursMinutes;
+        private readonly List<string> results;
 
         public PrintCombinationsWithoutOrderAndRepetitions()
         {
-            sb = new StringBuilder();
-            a = new int[] { 8, 4, 2, 1 };
-            n = a.Length;
-            k = 3;
-            indexes = Enumerable.Range(0, k).ToArray();
+            indexToHoursMinutes = new Dictionary<int, int>()
+            {
+                { 0, 8 },
+                { 1, 4 },
+                { 2, 2 },
+                { 3, 1 },
+                { 4, 32 },
+                { 5, 16 },
+                { 6, 8 },
+                { 7, 4 },
+                { 8, 2 },
+                { 9, 1 },
+            };
+            n = indexToHoursMinutes.Count;
+            turnedOn = 5;
+            indexes = Enumerable.Range(0, turnedOn).ToArray();
+
+            results = new List<string>();
         }
 
         public void Start()
         {
+            if (turnedOn == 0)
+            {
+                Console.WriteLine("turneOn должен быть больше 0");
+                return;
+            }
+
             var exit = false;
             var iterationCount = 0;
             while (!exit)
             {
                 iterationCount++;
-                PrintCombination();
+                AddResult();
 
                 var nextIndex = indexes[indexes.Length - 1] + 1;
 
                 if (nextIndex == n)
                 {
                     var cursor = indexes.Length - 2;
+
+                    if (cursor < 0)
+                    {
+                        break;
+                    }
+
                     var count = indexes.Length - cursor - 1;
                     while (indexes[cursor] + 1 + count >= n)
                     {
@@ -63,19 +89,33 @@ namespace EazyCSharp
                 }
             }
             Console.WriteLine($"Кол-во итераций: {iterationCount}");
+
+            foreach (var i in results)
+            {
+                Console.WriteLine(i);
+            }
         }
 
-        void PrintCombination()
+        void AddResult()
         {
-            sb.Clear();
-            for (var i = 0; i < k; i++)
+            var hours = 0;
+            var minutes = 0;
+            for (var i = 0; i < turnedOn; i++)
             {
-                if (i < k - 1)
-                    sb.Append($"{a[indexes[i]]}, ");
+                if (indexes[i] >= 0 && indexes[i] <= 3)
+                {
+                    hours += indexToHoursMinutes[indexes[i]];
+                } 
                 else
-                    sb.Append($"{a[indexes[i]]}");
+                {
+                    minutes += indexToHoursMinutes[indexes[i]];
+                }
             }
-            Console.WriteLine(sb.ToString());
+
+            if (hours > 11 || minutes > 59)
+                return;
+
+            results.Add($"{hours.ToString().PadLeft(2, '0')}:{minutes.ToString().PadLeft(2, '0')}");
         }
     }
 }
