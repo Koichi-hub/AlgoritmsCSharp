@@ -1,5 +1,8 @@
 ﻿namespace EazyCSharp
 {
+    /// <summary>
+    /// Задачка на динамическое программирование про черепашку https://github.com/Koichi-hub/AlgoritmsCSharp/blob/master/imgs/tirtle_problem.png
+    /// </summary>
     internal class DynamicProgrammingExampleProblem
     {
         private readonly int[,] a;
